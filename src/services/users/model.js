@@ -8,7 +8,7 @@ const UserSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String },
     role: { type: String, enum: ["host", "guest"], default: "guest" },
-    FBaccessToken: {type: String}
+    facebookId: {type: String}
   },
   { timestamps: true }
 )
@@ -33,7 +33,7 @@ UserSchema.pre("save", async function (next) {
   
     delete userObject.password
     delete userObject.__v
-    delete userObject.FBaccessToken
+    delete userObject.facebookIdToken
   
     return userObject
   }
