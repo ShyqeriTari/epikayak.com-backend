@@ -4,6 +4,7 @@ import accommodationModel from "./model.js"
 import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js"
 import { hostOnlyMiddleware } from "../../auth/hostOnlyMiddleware.js"
 
+
 const accommodationRouter = express.Router()
 
 accommodationRouter.post("/", JWTAuthMiddleware, hostOnlyMiddleware, async (req, res, next) => {
@@ -18,7 +19,7 @@ accommodationRouter.post("/", JWTAuthMiddleware, hostOnlyMiddleware, async (req,
 
 accommodationRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     try {
-      const accommodations = await accommodationModel.find()
+      const accommodations = await accommodationModel.find().populate({path: "host", select: "email -_id" })
       res.send(accommodations)
     } catch (error) {
       next(error)
