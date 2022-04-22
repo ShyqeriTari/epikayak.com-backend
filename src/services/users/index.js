@@ -2,6 +2,7 @@ import express from "express"
 import createError from "http-errors"
 import UsersModel from "./model.js"
 import { generateAccessToken } from "../../auth/tools.js"
+import { JWTAuthMiddleware } from "../../auth/JWTMiddleware.js"
 
 const usersRouter = express.Router()
 
@@ -29,6 +30,19 @@ usersRouter.post("/login", async (req, res, next) => {
         res.send({ accessToken })
       } else {
         next(createError(401, `Credentials are not ok!`))
+      }
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  usersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
+    try {
+      const user = await UsersModel.findById(req.user._id)
+      if (user) {
+        res.send(user)
+      } else {
+        next(401, `User with id ${req.user._id} not found!`)
       }
     } catch (error) {
       next(error)
