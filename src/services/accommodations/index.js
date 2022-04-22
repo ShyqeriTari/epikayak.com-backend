@@ -41,11 +41,15 @@ accommodationRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
 
   accommodationRouter.put("/:accommodationId", JWTAuthMiddleware, hostOnlyMiddleware, async (req, res, next) => {
     try {
+      const accommodation = await accommodationModel.findById(req.params.accommodationId)
+      if(req.user._id === accommodation.host.toString()){
       const updatedAccommodation = await accommodationModel.findByIdAndUpdate(req.params.accommodationId, req.body, { new: true, runValidators: true })
       if (updatedAccommodation) {
         res.status(204).send()
       } else {
         next(createError(404, `Accommodation with id ${req.params.accommodationId} not found!`))
+      }}else {
+        next(createError(403, `You are not authorized to modify accommodation with id ${req.params.accommodationId}`))
       }
     } catch (error) {
       next(error)
@@ -54,11 +58,15 @@ accommodationRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
 
   accommodationRouter.delete("/:accommodationId", JWTAuthMiddleware, hostOnlyMiddleware, async (req, res, next) => {
     try {
+      const accommodation = await accommodationModel.findById(req.params.accommodationId)
+      if(req.user._id === accommodation.host.toString()){
       const deletedAccommodation = await accommodationModel.findByIdAndDelete(req.params.accommodationId)
       if (deletedAccommodation) {
         res.status(204).send()
       } else {
         next(createError(404, `User with id ${req.params.accommodationId} not found!`))
+      }}else {
+        next(createError(403, `You are not authorized to delete accommodation with id ${req.params.accommodationId}`))
       }
     } catch (error) {
       next(error)
