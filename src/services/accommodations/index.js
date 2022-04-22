@@ -9,7 +9,7 @@ const accommodationRouter = express.Router()
 
 accommodationRouter.post("/", JWTAuthMiddleware, hostOnlyMiddleware, async (req, res, next) => {
   try {
-    const newAccommodation = new accommodationModel(req.body)
+    const newAccommodation = new accommodationModel({name: req.body.name, host: req.user._id, description: req.body.description, maxGuests: req.body.maxGuests, city: req.body.city})
     const { _id } = await newAccommodation.save()
     res.status(201).send({ _id })
   } catch (error) {
