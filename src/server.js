@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 import listEndpoints from "express-list-endpoints"
 import cors from "cors"
 import { badRequestHandler, unauthorizedHandler, forbiddenHandler, notFoundHandler, genericErrorHandler } from "./errorHandlers.js"
+import usersRouter from "./services/users/index.js"
 
 
 const server = express()
@@ -11,7 +12,7 @@ const port = process.env.PORT
 server.use(cors())
 server.use(express.json())
 
-
+server.use("/users", usersRouter)
 
 server.use(badRequestHandler)
 server.use(unauthorizedHandler)
